@@ -2067,5 +2067,29 @@
       <field type="char[10]" name="name" instance="true">Name of the debug variable</field>
       <field type="char[64]" name="value">Value of the debug variable</field>
     </message>
+    <message id="55000" name="USER_WP_REACHED">
+      <description>
+        Vehicle has reached or failed to reach a user-defined waypoint.
+      </description>
+      <field type="uint16_t" name="wp_index">Waypoint number (0-indexed).</field>
+      <field type="uint8_t"  name="reached">1 if reached, 0 if not.</field>
+    </message>
+
+    <message id="55001" name="RESCUE_WP">
+      <description>
+        One waypoint in the rescue-mode waypoint list. Send seq 0..total_count-1.
+      </description>
+      <field type="uint16_t" name="total_count">Total number of rescue waypoints.</field>
+      <field type="uint16_t" name="seq">Index of this waypoint (0-indexed).</field>
+      <field type="int32_t"  name="lat">Latitude (degE7).</field>
+      <field type="int32_t"  name="lon">Longitude (degE7).</field>
+    </message>
+    <message id="55002" name="TARGET_PX">
+      <description>
+        Message to report a target's position in pixel coordinates,from a vision system. 
+      </description>
+      <field type="uint16_t" name="dx">Number of pixels to move in the x direction.</field>
+      <field type="uint16_t" name="dy">Number of pixels to move in the y direction.</field>
+    </message>
   </messages>
 </mavlink>
