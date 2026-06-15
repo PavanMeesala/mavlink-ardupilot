@@ -2097,5 +2097,14 @@
         <field type="uint8_t" name="target_component">Component ID</field>
         <field type="uint8_t" name="start">1 to start search, 0 reserved</field>
     </message>
+    <message id="55004" name="RESCUE_STATUS">
+      <description>Reports the current internal state of RESCUE mode to GCS.</description>
+      <field type="uint8_t" name="phase">
+        Current rescue phase: 0=IDLE, 1=TAKEOFF_PENDING, 2=TAKING_OFF, 3=WP_NAV, 4=GUIDED
+      </field>
+      <field type="uint8_t" name="wp_total">Total number of rescue waypoints loaded.</field>
+      <field type="uint8_t" name="wp_current">Current waypoint index (0-based).</field>
+      <field type="uint8_t" name="wps_loaded">1 if all waypoints received, 0 otherwise.</field>
+    </message>
   </messages>
 </mavlink>
