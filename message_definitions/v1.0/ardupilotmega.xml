@@ -2106,5 +2106,39 @@
       <field type="uint8_t" name="wp_current">Current waypoint index (0-based).</field>
       <field type="uint8_t" name="wps_loaded">1 if all waypoints received, 0 otherwise.</field>
     </message>
+    <!-- OBC sends AprilTag offset during precision landing -->
+    <message id="55005" name="ARUCO_MARKER">
+      <description>AprilTag/Aruco marker position relative to camera centre. Sent by OBC vision system during precision landing phase.</description>
+      <field type="int16_t" name="dx">Pixel offset X from frame centre (right = positive)</field>
+      <field type="int16_t" name="dy">Pixel offset Y from frame centre (down = positive)</field>
+      <field type="float"   name="z">Marker distance from camera in metres (0 if not detected)</field>
+      <field type="uint8_t" name="detected">1 if marker detected this frame, 0 if lost</field>
+    </message>
+    
+    <!-- OBC forwards home beacon GPS to ArduPilot -->
+    <message id="55006" name="HOME_BEACON_GPS">
+      <description>GPS position and velocity of the moving landing platform, forwarded by OBC from its home beacon connection.</description>
+      <field type="int32_t" name="lat">Latitude degE7</field>
+      <field type="int32_t" name="lon">Longitude degE7</field>
+      <field type="float"   name="heading">Platform heading degrees 0-360</field>
+      <field type="float"   name="v_north">Platform velocity north m/s</field>
+      <field type="float"   name="v_east">Platform velocity east m/s</field>
+    </message>
+    
+    <!-- OBC requests lifebuoy deployment -->
+    <message id="55007" name="DEPLOY_LIFEBUOY">
+      <description>Command ArduPilot to trigger lifebuoy servo deployment sequence.</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="deploy">1 to deploy</field>
+    </message>
+    
+    <!-- ArduPilot reports dynamic landing status to GCS/OBC -->
+    <message id="55008" name="DYNAMIC_LANDING_STATUS">
+      <description>Reports current state of dynamic landing mode to GCS.</description>
+      <field type="uint8_t" name="phase">0=GPS_FOLLOW 1=CENTERING 2=DESCENDING 3=LANDED</field>
+      <field type="float"   name="rel_alt">Current relative altitude metres</field>
+      <field type="float"   name="dist_to_beacon">Horizontal distance to beacon metres</field>
+      <field type="uint8_t" name="marker_detected">1 if aruco marker currently visible</field>
+    </message>
   </messages>
 </mavlink>
