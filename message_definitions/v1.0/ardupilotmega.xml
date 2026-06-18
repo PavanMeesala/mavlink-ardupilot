@@ -2100,7 +2100,7 @@
     <message id="55004" name="RESCUE_STATUS">
       <description>Reports the current internal state of RESCUE mode to GCS.</description>
       <field type="uint8_t" name="phase">
-        Current rescue phase: 0=IDLE, 1=TAKEOFF_PENDING, 2=TAKING_OFF, 3=WP_NAV, 4=GUIDED
+        0=IDLE 1=TAKEOFF_PENDING 2=TAKING_OFF 3=WP_NAV 4=INSERT_NAV 5=CENTERING 6=DEPLOYING 7=GUIDED 8=WPS_GENERATED
       </field>
       <field type="uint8_t" name="wp_total">Total number of rescue waypoints loaded.</field>
       <field type="uint8_t" name="wp_current">Current waypoint index (0-based).</field>
