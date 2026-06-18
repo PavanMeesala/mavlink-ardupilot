@@ -2146,5 +2146,12 @@
       <field type="float"   name="dist_to_beacon">Horizontal distance to beacon metres</field>
       <field type="uint8_t" name="marker_detected">1 if aruco marker currently visible</field>
     </message>
+    <!-- Message to Generate Waypoints -->
+    <message id="55010" name="GENERATE_WPS">
+      <description>Command ArduPilot to generate waypoints for rescue mission.</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="deploy">1 to generate waypoints.</field>
+      <field type="uint16_t" name="length">Length of the path.</field>
+    </message>
   </messages>
 </mavlink>
