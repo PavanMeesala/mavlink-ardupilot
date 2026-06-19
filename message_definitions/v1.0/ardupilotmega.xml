@@ -2153,5 +2153,13 @@
       <field type="uint8_t" name="deploy">1 to generate waypoints.</field>
       <field type="uint16_t" name="length">Length of the path.</field>
     </message>
+    <message id="55011" name="RESCUE_INSERT_WP_ACK">
+      <description>Acknowledgement from ArduPilot after receiving a RESCUE_INSERT_WP command.</description>
+      <field type="int32_t" name="lat">Latitude degE7 of the inserted waypoint (0 if rejected)</field>
+      <field type="int32_t" name="lon">Longitude degE7 of the inserted waypoint (0 if rejected)</field>
+      <field type="uint8_t" name="accepted">1 if waypoint was accepted, 0 if rejected</field>
+      <field type="uint8_t" name="reason">0=OK 1=wrong_phase 2=no_gps 3=wp_limit_reached</field>
+      <field type="uint8_t" name="insert_before_wp">Index in the pattern that will be navigated after this inserted WP</field>
+    </message>
   </messages>
 </mavlink>
