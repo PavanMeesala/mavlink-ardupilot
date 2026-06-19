@@ -2158,7 +2158,7 @@
       <field type="int32_t" name="lat">Latitude degE7 of the inserted waypoint (0 if rejected)</field>
       <field type="int32_t" name="lon">Longitude degE7 of the inserted waypoint (0 if rejected)</field>
       <field type="uint8_t" name="accepted">1 if waypoint was accepted, 0 if rejected</field>
-      <field type="uint8_t" name="reason">0=OK 1=wrong_phase 2=no_gps 3=wp_limit_reached</field>
+      <field type="uint8_t" name="reason">0=OK 1=wrong_phase 2=no_gps 3=wp_limit_reached 4=distance_threshold_crossed</field>
       <field type="uint8_t" name="insert_before_wp">Index in the pattern that will be navigated after this inserted WP</field>
     </message>
   </messages>
