@@ -2084,14 +2084,13 @@
       <field type="int32_t"  name="lat">Latitude (degE7).</field>
       <field type="int32_t"  name="lon">Longitude (degE7).</field>
     </message>
+    <!-- Fix 1: TARGET_PX — change uint16 to int16 to match Python's signed offsets -->
     <message id="55002" name="TARGET_PX">
-      <description>
-        Message to report a target's position in pixel coordinates,from a vision system. 
-      </description>
-      <field type="uint16_t" name="dx">Number of pixels to move in the x direction.</field>
-      <field type="uint16_t" name="dy">Number of pixels to move in the y direction.</field>
+      <description>Target pixel offset from frame centre. Signed: right/down positive.</description>
+      <field type="int16_t" name="dx">Pixel offset X from frame centre (right positive)</field>
+      <field type="int16_t" name="dy">Pixel offset Y from frame centre (down positive)</field>
     </message>
-    <message id="52002" name="RESCUE_START_SEARCH">
+    <message id="55003" name="RESCUE_START_SEARCH">
         <description>Command to begin search navigation through previously loaded RESCUE_WP waypoints.</description>
         <field type="uint8_t" name="target_system">System ID</field>
         <field type="uint8_t" name="target_component">Component ID</field>
@@ -2124,10 +2123,10 @@
     
     <!-- OBC sends AprilTag marker offset during precision landing -->
     <message id="55007" name="ARUCO_MARKER">
-      <description>AprilTag/Aruco marker pixel offset from frame centre. Sent by OBC during dynamic landing phase.</description>
-      <field type="int16_t" name="dx">Pixel offset X from frame centre (right positive)</field>
-      <field type="int16_t" name="dy">Pixel offset Y from frame centre (down positive)</field>
-      <field type="float"   name="z">Marker distance from camera in metres</field>
+      <description>AprilTag marker body-frame position from camera. x=forward, y=right, z=distance.</description>
+      <field type="float"   name="x">Body-frame forward offset in metres</field>
+      <field type="float"   name="y">Body-frame right offset in metres</field>
+      <field type="float"   name="z">Distance from camera in metres</field>
       <field type="uint8_t" name="detected">1 if marker detected, 0 if lost</field>
     </message>
     
