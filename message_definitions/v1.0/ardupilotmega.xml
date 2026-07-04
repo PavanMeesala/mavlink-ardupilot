@@ -2110,7 +2110,7 @@
       <field type="int32_t" name="lat">Latitude degE7</field>
       <field type="int32_t" name="lon">Longitude degE7</field>
     </message>
-    
+
     <!-- OBC forwards moving platform GPS to ArduPilot -->
     <message id="55006" name="HOME_BEACON_GPS">
       <description>GPS position and velocity of the moving landing platform. Must be received before mission start is allowed.</description>
@@ -2120,7 +2120,7 @@
       <field type="float"   name="v_north">Platform velocity north m/s</field>
       <field type="float"   name="v_east">Platform velocity east m/s</field>
     </message>
-    
+
     <!-- OBC sends AprilTag marker offset during precision landing -->
     <message id="55007" name="ARUCO_MARKER">
       <description>AprilTag marker body-frame position from camera. x=forward, y=right, z=distance.</description>
@@ -2129,14 +2129,14 @@
       <field type="float"   name="z">Distance from camera in metres</field>
       <field type="uint8_t" name="detected">1 if marker detected, 0 if lost</field>
     </message>
-    
+
     <!-- OBC manually requests lifebuoy deployment -->
     <message id="55008" name="DEPLOY_LIFEBUOY">
       <description>Command ArduPilot to trigger lifebuoy servo deployment sequence immediately.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="deploy">1 to deploy</field>
     </message>
-    
+
     <!-- ArduPilot reports dynamic landing status -->
     <message id="55009" name="DYNAMIC_LANDING_STATUS">
       <description>Reports current state of dynamic landing mode to GCS at 1Hz.</description>
@@ -2145,7 +2145,7 @@
       <field type="float"   name="dist_to_beacon">Horizontal distance to beacon metres</field>
       <field type="uint8_t" name="marker_detected">1 if aruco marker currently visible</field>
     </message>
-    <!-- Message to Generate Waypoints -->
+        <!-- Message to Generate Waypoints -->
     <message id="55010" name="GENERATE_WPS">
       <description>Command ArduPilot to generate waypoints for rescue mission.</description>
       <field type="uint8_t" name="target_system">System ID</field>
