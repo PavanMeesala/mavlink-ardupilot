@@ -2074,91 +2074,132 @@
       <field type="uint16_t" name="wp_index">Waypoint number (0-indexed).</field>
       <field type="uint8_t"  name="reached">1 if reached, 0 if not.</field>
     </message>
-
+    
     <message id="55001" name="RESCUE_WP">
       <description>
         One waypoint in the rescue-mode waypoint list. Send seq 0..total_count-1.
+        Also used by ArduPilot to echo back generated/uploaded waypoints to GCS.
+        seq=255 is a sentinel meaning "this is a user-inserted priority waypoint".
       </description>
       <field type="uint16_t" name="total_count">Total number of rescue waypoints.</field>
-      <field type="uint16_t" name="seq">Index of this waypoint (0-indexed).</field>
+      <field type="uint16_t" name="seq">Index of this waypoint (0-indexed), or 255 for inserted WP.</field>
       <field type="int32_t"  name="lat">Latitude (degE7).</field>
       <field type="int32_t"  name="lon">Longitude (degE7).</field>
     </message>
-    <!-- Fix 1: TARGET_PX — change uint16 to int16 to match Python's signed offsets -->
+    
     <message id="55002" name="TARGET_PX">
-      <description>Target pixel offset from frame centre. Signed: right/down positive.</description>
-      <field type="int16_t" name="dx">Pixel offset X from frame centre (right positive)</field>
-      <field type="int16_t" name="dy">Pixel offset Y from frame centre (down positive)</field>
+      <description>
+        Target pixel offset from frame centre, sent by OBC vision system when a
+        detection exists. Signed: right/down positive. Absence of this message
+        for longer than RSC_TRACK_TO seconds is interpreted as "target lost".
+      </description>
+      <field type="int16_t" name="dx">Pixel offset X from frame centre (right positive).</field>
+      <field type="int16_t" name="dy">Pixel offset Y from frame centre (down positive).</field>
     </message>
+    
     <message id="55003" name="RESCUE_START_SEARCH">
-        <description>Command to begin search navigation through previously loaded RESCUE_WP waypoints.</description>
-        <field type="uint8_t" name="target_system">System ID</field>
-        <field type="uint8_t" name="target_component">Component ID</field>
-        <field type="uint8_t" name="start">1 to start search, 0 reserved</field>
+      <description>
+        Command to begin search navigation through previously loaded or generated
+        RESCUE_WP waypoints. Triggers takeoff to RSC_NAV_ALT if vehicle is landed.
+        Rejected if no home beacon GPS has been received.
+      </description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint8_t" name="start">1 to start search, 0 reserved</field>
     </message>
+    
     <message id="55004" name="RESCUE_STATUS">
-      <description>Reports the current internal state of RESCUE mode to GCS.</description>
+      <description>
+        Reports the current internal state of RESCUE mode to GCS at 1Hz.
+      </description>
       <field type="uint8_t" name="phase">
-        0=IDLE 1=TAKEOFF_PENDING 2=TAKING_OFF 3=WP_NAV 4=INSERT_NAV 5=CENTERING 6=DEPLOYING 7=GUIDED 8=WPS_GENERATED
+        0=IDLE 1=TAKEOFF 2=TAKING_OFF 3=WP_NAV 4=INSERT_NAV 5=HOLD_POINT
+        6=TARGET_APPROACH 7=CENTERING 8=DEPLOYING 9=GUIDED 10=WPS_GENERATED
       </field>
       <field type="uint8_t" name="wp_total">Total number of rescue waypoints loaded.</field>
       <field type="uint8_t" name="wp_current">Current waypoint index (0-based).</field>
-      <field type="uint8_t" name="wps_loaded">1 if all waypoints received, 0 otherwise.</field>
+      <field type="uint8_t" name="wps_loaded">1 if all waypoints received/generated, 0 otherwise.</field>
     </message>
+    
     <message id="55005" name="RESCUE_INSERT_WP">
-      <description>Insert a priority waypoint into the active rescue search pattern. Vehicle will navigate to this point next, then resume remaining pattern waypoints.</description>
+      <description>
+        Insert a priority waypoint into the active rescue search pattern.
+        Vehicle navigates here next, then resumes the remaining pattern.
+      </description>
       <field type="int32_t" name="lat">Latitude degE7</field>
       <field type="int32_t" name="lon">Longitude degE7</field>
     </message>
-
-    <!-- OBC forwards moving platform GPS to ArduPilot -->
+    
     <message id="55006" name="HOME_BEACON_GPS">
-      <description>GPS position and velocity of the moving landing platform. Must be received before mission start is allowed.</description>
+      <description>
+        GPS position and velocity of the moving landing platform, forwarded by
+        OBC from its home beacon connection. Must be received before RESCUE
+        mission start is allowed, and is used continuously during
+        DYNAMIC_LANDING mode.
+      </description>
       <field type="int32_t" name="lat">Latitude degE7</field>
       <field type="int32_t" name="lon">Longitude degE7</field>
       <field type="float"   name="heading">Platform heading degrees 0-360</field>
       <field type="float"   name="v_north">Platform velocity north m/s</field>
       <field type="float"   name="v_east">Platform velocity east m/s</field>
     </message>
-
-    <!-- OBC sends AprilTag marker offset during precision landing -->
+    
     <message id="55007" name="ARUCO_MARKER">
-      <description>AprilTag marker body-frame position from camera. x=forward, y=right, z=distance.</description>
+      <description>
+        AprilTag/Aruco marker body-frame position from camera pose estimation.
+        x=forward (m), y=right (m), z=distance from camera (m).
+        detected=0 means no marker visible this frame (mirrors marker_position.x=None).
+      </description>
       <field type="float"   name="x">Body-frame forward offset in metres</field>
       <field type="float"   name="y">Body-frame right offset in metres</field>
       <field type="float"   name="z">Distance from camera in metres</field>
       <field type="uint8_t" name="detected">1 if marker detected, 0 if lost</field>
     </message>
-
-    <!-- OBC manually requests lifebuoy deployment -->
-    <message id="55008" name="DEPLOY_LIFEBUOY">
-      <description>Command ArduPilot to trigger lifebuoy servo deployment sequence immediately.</description>
+    
+    <message id="55008" name="LIFEBUOY_CONTROL">
+      <description>
+        Manually command ArduPilot to trigger lifebuoy servo deployment
+        sequence immediately, bypassing the automatic altitude-based trigger.
+      </description>
       <field type="uint8_t" name="target_system">System ID</field>
-      <field type="uint8_t" name="deploy">1 to deploy</field>
+      <field type="uint8_t" name="deploy">1 to deploy, 0 to retract</field>
     </message>
-
-    <!-- ArduPilot reports dynamic landing status -->
+    
     <message id="55009" name="DYNAMIC_LANDING_STATUS">
-      <description>Reports current state of dynamic landing mode to GCS at 1Hz.</description>
-      <field type="uint8_t" name="phase">0=GPS_FOLLOW 1=CENTERING 2=DESCENDING 3=LANDED</field>
+      <description>
+        Reports current state of dynamic landing mode to GCS at 1Hz.
+      </description>
+      <field type="uint8_t" name="phase">0=GPS_FOLLOW 1=PRECISION 2=LANDED</field>
       <field type="float"   name="rel_alt">Current relative altitude metres</field>
       <field type="float"   name="dist_to_beacon">Horizontal distance to beacon metres</field>
       <field type="uint8_t" name="marker_detected">1 if aruco marker currently visible</field>
     </message>
-        <!-- Message to Generate Waypoints -->
+    
     <message id="55010" name="GENERATE_WPS">
-      <description>Command ArduPilot to generate waypoints for rescue mission.</description>
-      <field type="uint8_t" name="target_system">System ID</field>
-      <field type="uint8_t" name="deploy">1 to generate waypoints.</field>
-      <field type="uint16_t" name="length">Length of the path.</field>
+      <description>
+        Command ArduPilot to generate waypoints for the rescue mission using the
+        expanding conical lawn pattern, aligned to current drone heading.
+      </description>
+      <field type="uint8_t"  name="target_system">System ID</field>
+      <field type="uint16_t" name="length">Length of the search path in metres</field>
     </message>
+    
     <message id="55011" name="RESCUE_INSERT_WP_ACK">
-      <description>Acknowledgement from ArduPilot after receiving a RESCUE_INSERT_WP command.</description>
+      <description>
+        Acknowledgement from ArduPilot after receiving a RESCUE_INSERT_WP command.
+      </description>
       <field type="int32_t" name="lat">Latitude degE7 of the inserted waypoint (0 if rejected)</field>
       <field type="int32_t" name="lon">Longitude degE7 of the inserted waypoint (0 if rejected)</field>
       <field type="uint8_t" name="accepted">1 if waypoint was accepted, 0 if rejected</field>
-      <field type="uint8_t" name="reason">0=OK 1=wrong_phase 2=no_gps 3=wp_limit_reached 4=distance_threshold_crossed</field>
-      <field type="uint8_t" name="insert_before_wp">Index in the pattern that will be navigated after this inserted WP</field>
+      <field type="uint8_t" name="reason">0=OK 1=wrong_phase 2=invalid_coords 3=wp_limit_reached</field>
+      <field type="uint8_t" name="insert_before_wp">Pattern index resumed after this inserted WP</field>
+    </message>
+    
+    <message id="55012" name="REQUEST_WPS">
+      <description>
+        Request for waypoints from the GCS.
+      </description>
+      <field type="uint8_t" name="target_system">System ID</field>
     </message>
   </messages>
 </mavlink>
